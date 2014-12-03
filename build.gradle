@@ -1,0 +1,123 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'signing'
+
+repositories {
+    mavenLocal();
+    mavenCentral();
+}
+
+
+group = 'com.inkapplications'
+version = '0.0'
+
+def sonatypeRepositoryUrl = ""
+def isDevBuild = false
+def isReleaseBuild = false
+
+//set build variables based on build type (release, continuous integration, development)
+if(hasProperty("release")) {
+    if (!getProperty("build")) {
+        throw new RuntimeException("Must specify a build number");
+    }
+    version += "." + getProperty("build");
+    isReleaseBuild = true
+    sonatypeRepositoryUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+} else if (hasProperty("snapshot")) {
+    isSnapshot = true
+    version += "-SNAPSHOT"
+    sonatypeRepositoryUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
+} else {
+    version += "-SNAPSHOT"
+    isDevBuild = true
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives jar
+    archives sourcesJar
+    archives javadocJar
+}
+
+if(isReleaseBuild) {
+    signing {
+        sign configurations.archives
+    }
+} else {
+    task signArchives {
+        // do nothing
+    }
+}
+
+uploadArchives {
+    repositories {
+        if (isDevBuild) {
+            mavenLocal()
+        } else {
+            mavenDeployer {
+                repository(url: sonatypeRepositoryUrl) {
+                    authentication(userName: sonatypeUsername, password: sonatypePassword)
+                }
+
+                if(isReleaseBuild) {
+                    beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+                }
+            }
+        }
+
+        mavenDeployer {
+            pom.project {
+                name 'Prism'
+                artifactId project.name
+                packaging 'jar'
+                description 'An android framework for easily including libraries'
+                url 'https://github.com/InkApplications/Prism'
+
+                scm {
+                    url 'scm:git@github.com:InkApplications/Prism.git'
+                    connection 'scm:git@github.com:InkApplications/Prism.git'
+                    developerConnection 'scm:git@github.com:InkApplications/Prism.git'
+                }
+
+                licenses {
+                }
+
+                developers {
+                    developer {
+                        id 'maxvandervelde'
+                        name 'Maxwell Vandervelde'
+                    }
+                }
+            }
+        }
+    }
+}
+
+configurations {
+    provided
+    compile.extendsFrom provided
+    markdownDoclet
+}
+
+dependencies {
+    provided 'com.google.android:android:4.1.+'
+    provided 'com.google.android:support-v4:+'
+    compile 'com.squareup.dagger:dagger:+'
+    provided 'com.squareup.dagger:dagger-compiler:+'
+    markdownDoclet 'ch.raffael.pegdown-doclet:pegdown-doclet:1.1.+'
+}
+
+javadoc.options {
+    docletpath = configurations.markdownDoclet.files.asType(List)
+    doclet = "ch.raffael.doclets.pegdown.PegdownDoclet"
+}
+

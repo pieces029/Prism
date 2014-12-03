@@ -4,6 +4,17 @@ Prism
 Prism is a collection of libraries and lightweight framework for Android 
 development.
 
+Installation
+------------
+
+To include prism in your project using gradle, add this line to your 
+dependencies:
+
+    compile "com.inkapplications.prism:prism:0.0-SNAPSHOT"
+
+To begin using, Prism will need a way to hook into your application. This is
+accomplished with an Activity Lifecycle callback listener.
+
 Project Goals
 -------------
 
