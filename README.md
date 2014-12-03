@@ -12,8 +12,8 @@ dependencies:
 
     compile "com.inkapplications.prism:prism:0.0-SNAPSHOT"
 
-To begin using, Prism will need a way to hook into your application. This is
-accomplished with an Activity Lifecycle callback listener.
+For usage installations take a look at the provided usage docs in 
+[doc/usage.md][2]
 
 Project Goals
 -------------
@@ -30,3 +30,4 @@ minimal boilerplate for basic use.
 libraries will follow [Semantic Versioning][1]
 
 [1]: http://semver.org/
+[2]: doc/usage.md
