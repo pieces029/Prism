@@ -1,105 +1,30 @@
-apply plugin: 'java'
-apply plugin: 'maven'
-apply plugin: 'signing'
+import groovyx.net.http.ContentType
+import org._10ne.gradle.rest.RestTask
+
+apply from: 'gradle/credentials.gradle'
+apply from: 'gradle/compile.gradle'
+apply from: 'gradle/publishing.gradle'
+apply from: 'gradle/bintray.gradle'
+apply from: 'gradle/artifactory.gradle'
+apply from: 'gradle/check.gradle'
+apply from: 'gradle/license.gradle'
+
+version = "$version${project.hasProperty('release') ? '' : '-SNAPSHOT'}"
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:0.6'
+        classpath 'org.jfrog.buildinfo:build-info-extractor-gradle:3.0.1'
+        classpath 'nl.javadude.gradle.plugins:license-gradle-plugin:0.11.0'
+        classpath "org._10ne.gradle:rest-gradle-plugin:0.3.1"
+    }
+}
 
 repositories {
-    mavenLocal();
-    mavenCentral();
-}
-
-
-group = 'com.inkapplications'
-version = '0.0'
-
-def sonatypeRepositoryUrl = ""
-def isDevBuild = false
-def isReleaseBuild = false
-
-//set build variables based on build type (release, continuous integration, development)
-if(hasProperty("release")) {
-    if (!getProperty("build")) {
-        throw new RuntimeException("Must specify a build number");
-    }
-    version += "." + getProperty("build");
-    isReleaseBuild = true
-    sonatypeRepositoryUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
-} else if (hasProperty("snapshot")) {
-    isSnapshot = true
-    version += "-SNAPSHOT"
-    sonatypeRepositoryUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
-} else {
-    version += "-SNAPSHOT"
-    isDevBuild = true
-}
-
-task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
-}
-
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from javadoc.destinationDir
-}
-
-artifacts {
-    archives jar
-    archives sourcesJar
-    archives javadocJar
-}
-
-if(isReleaseBuild) {
-    signing {
-        sign configurations.archives
-    }
-} else {
-    task signArchives {
-        // do nothing
-    }
-}
-
-uploadArchives {
-    repositories {
-        if (isDevBuild) {
-            mavenLocal()
-        } else {
-            mavenDeployer {
-                repository(url: sonatypeRepositoryUrl) {
-                    authentication(userName: sonatypeUsername, password: sonatypePassword)
-                }
-
-                if(isReleaseBuild) {
-                    beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-                }
-            }
-        }
-
-        mavenDeployer {
-            pom.project {
-                name 'Prism'
-                artifactId project.name
-                packaging 'jar'
-                description 'An android framework for easily including libraries'
-                url 'https://github.com/InkApplications/Prism'
-
-                scm {
-                    url 'scm:git@github.com:InkApplications/Prism.git'
-                    connection 'scm:git@github.com:InkApplications/Prism.git'
-                    developerConnection 'scm:git@github.com:InkApplications/Prism.git'
-                }
-
-                licenses {
-                }
-
-                developers {
-                    developer {
-                        id 'maxvandervelde'
-                        name 'Maxwell Vandervelde'
-                    }
-                }
-            }
-        }
-    }
+    jcenter()
 }
 
 configurations {
@@ -121,3 +46,19 @@ javadoc.options {
     doclet = "ch.raffael.doclets.pegdown.PegdownDoclet"
 }
 
+apply plugin: "org.10ne.rest"
+
+task bintraySign(type: RestTask) {
+    description = "Sign the release build on bintray"
+    httpMethod = 'post'
+    uri = "https://api.bintray.com/gpg/$project_vendor/$project_bintray_repo/$name/versions/$version"
+    username = bintrayUsername
+    password = bintrayKey
+    requestBody = [passphrase: signingPassword]
+    contentType = ContentType.JSON
+}
+
+task release {
+    description = "Releases a version of the library on Artifactory and Bintray"
+    dependsOn artifactoryPublish, bintrayUpload, bintraySign
+}
