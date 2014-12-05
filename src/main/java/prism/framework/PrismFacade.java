@@ -22,7 +22,7 @@ import android.app.Application;
 @SuppressWarnings("unused")
 final public class PrismFacade
 {
-    private PrismFacade() {}
+    private PrismFacade() { }
 
     /**
      * Bootstrap the framework on an activity.
@@ -105,9 +105,9 @@ final public class PrismFacade
     {
         if (false == application instanceof KernelContext) {
             throw new IllegalArgumentException(
-                "Your application must implement KernelContext in order to use the activity facade. " +
-                    "If you are using a different container for the kernel you may specify it manually as a parameter " +
-                    "see: `PrismFacade#bootstrap(KernelContext, Activity)`"
+                "Your application must implement KernelContext in order to use the activity facade. "
+                    + "If you are using a different container for the kernel you may specify it manually as a parameter "
+                    + "see: `PrismFacade#bootstrap(KernelContext, Activity)`"
             );
         }
 

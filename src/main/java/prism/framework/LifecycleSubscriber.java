@@ -25,12 +25,14 @@ public class LifecycleSubscriber implements Application.ActivityLifecycleCallbac
 {
     final private PrismKernel kernel;
 
+    /** Constructor with an kernel context. */
     @SuppressWarnings("unused")
     public LifecycleSubscriber(KernelContext context)
     {
         this(context.getKernel());
     }
 
+    /** Constructor with an prism kernel. */
     public LifecycleSubscriber(PrismKernel kernel)
     {
         this.kernel = kernel;
@@ -41,10 +43,10 @@ public class LifecycleSubscriber implements Application.ActivityLifecycleCallbac
         this.kernel.bootstrap(activity);
     }
 
-    @Override public void onActivityStarted(Activity activity) {}
-    @Override public void onActivityResumed(Activity activity) {}
-    @Override public void onActivityPaused(Activity activity) {}
-    @Override public void onActivityStopped(Activity activity) {}
-    @Override public void onActivitySaveInstanceState(Activity activity, Bundle bundle) {}
-    @Override public void onActivityDestroyed(Activity activity) {}
+    @Override public void onActivityStarted(Activity activity) { }
+    @Override public void onActivityResumed(Activity activity) { }
+    @Override public void onActivityPaused(Activity activity) { }
+    @Override public void onActivityStopped(Activity activity) { }
+    @Override public void onActivitySaveInstanceState(Activity activity, Bundle bundle) { }
+    @Override public void onActivityDestroyed(Activity activity) { }
 }
