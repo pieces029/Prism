@@ -25,14 +25,14 @@ public class LifecycleSubscriber implements Application.ActivityLifecycleCallbac
 {
     final private PrismKernel kernel;
 
-    /** Constructor with an kernel context. */
+    /** Constructor with a kernel context. */
     @SuppressWarnings("unused")
     public LifecycleSubscriber(KernelContext context)
     {
         this(context.getKernel());
     }
 
-    /** Constructor with an prism kernel. */
+    /** Constructor with a prism kernel. */
     public LifecycleSubscriber(PrismKernel kernel)
     {
         this.kernel = kernel;
