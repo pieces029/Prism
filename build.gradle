@@ -48,6 +48,10 @@ javadoc.options {
 
 apply plugin: "org.10ne.rest"
 
+/**
+ * Sign the content that has been uploaded to bintray. This must be done since the plugin does not support signing /
+ * bintray doesn't auto sign if the private key requires a password.
+ */
 task bintraySign(type: RestTask) {
     description = "Sign the release build on bintray"
     httpMethod = 'post'
@@ -58,7 +62,33 @@ task bintraySign(type: RestTask) {
     contentType = ContentType.JSON
 }
 
+/**
+ * Publish the content that has been uploaded to bintray, so you don't need to go to the web ui.
+ */
+task bintrayPublishContent(type: RestTask) {
+    description = 'Move files that have been uploaded to bintray to be published'
+    httpMethod = 'post'
+    uri = "https://api.bintray.com/content/$project_vendor/$project_bintray_repo/${rootProject.name}/$version/publish"
+    username = bintrayUsername
+    password = bintrayKey
+    requestBody = [discard: true]
+    contentType = ContentType.JSON
+}
+
+/**
+ * Publish uploaded content to maven central, so you don't need to go to the web ui.l
+ */
+task bintrayToMavenCentral(type: RestTask) {
+    description = 'Publish from bintray to maven central'
+    httpMethod = 'post'
+    uri = "https://api.bintray.com/maven_central_sync/$project_vendor/$project_bintray_repo/${rootProject.name}/versions/$version"
+    username = bintrayUsername
+    password = bintrayKey
+    requestBody = [username: sonatypeUserName, password: sonatypePassword, close: 1]
+    contentType = ContentType.JSON
+}
+
 task release {
     description = "Releases a version of the library on Artifactory and Bintray"
-    dependsOn artifactoryPublish, bintrayUpload, bintraySign
+    dependsOn artifactoryPublish, bintrayUpload, bintraySign, bintrayPublishContent, bintrayToMavenCentral
 }
