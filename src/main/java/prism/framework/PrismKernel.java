@@ -34,6 +34,14 @@ final public class PrismKernel
     private boolean injectContentView = true;
 
     /**
+     * Create a Graphless Application.
+     */
+    public PrismKernel()
+    {
+        this(null);
+    }
+
+    /**
      * Create an application with the specified object graphs.
      */
     public PrismKernel(GraphContext graph)
