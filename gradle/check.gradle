@@ -1,0 +1,12 @@
+// Checkstyle
+apply plugin: 'checkstyle'
+checkstyle {
+    ignoreFailures = true
+    configFile = rootProject.file('codequality/checkstyle.xml')
+}
+
+// FindBugs
+apply plugin: 'findbugs'
+findbugs {
+    ignoreFailures = true
+}

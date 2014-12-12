@@ -22,7 +22,7 @@ final public class PrismKernel
     /** Service used when injecting dependencies into objects. */
     final private DependencyInjector dependencyInjector;
 
-    /** Service used when injecting the content view for an activity */
+    /** Service used when injecting the content view for an activity. */
     final private ActivityLayoutInjector layoutInjector;
 
     /**
