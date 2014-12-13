@@ -41,7 +41,7 @@ dependencies {
 
     compile 'com.google.android:support-v4:+', optional
     compile 'com.squareup.dagger:dagger:+'
-    provided 'com.squareup.dagger:dagger-compiler:+'
+    compile 'com.squareup.dagger:dagger-compiler:+', optional
     markdownDoclet 'ch.raffael.pegdown-doclet:pegdown-doclet:1.1.+'
 }
 
