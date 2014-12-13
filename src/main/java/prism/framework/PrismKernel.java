@@ -29,7 +29,7 @@ final public class PrismKernel
      * Whether or not to set the content view to activities during injections
      * based on the Layout attribute.
      *
-     * @see #injectContentView
+     * @see ActivityLayoutInjector#injectContentView
      */
     private boolean injectContentView = true;
 

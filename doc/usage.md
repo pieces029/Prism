@@ -15,7 +15,7 @@ public class MyApplication extends Application implements KernelContext {
     @Override public void onCreate() {
         super.onCreate();
         
-        this.kernel = new PrismKernel(this);
+        this.kernel = new PrismKernel();
     }
 
     @Override public PrismKernel getKernel() {
