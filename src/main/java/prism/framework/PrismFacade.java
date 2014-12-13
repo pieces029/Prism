@@ -7,6 +7,8 @@ package prism.framework;
 import android.app.Activity;
 import android.app.Application;
 
+import static prism.framework.Preconditions.checkNotNull;
+
 /**
  * A series of convenience facades for bootstrapping prism where no lifecycle
  * callbacks are available.
@@ -32,8 +34,8 @@ final public class PrismFacade
      */
     public static void bootstrap(KernelContext context, Activity activity)
     {
-        PrismKernel kernel = context.getKernel();
-        kernel.bootstrap(activity);
+        PrismKernel kernel = checkNotNull(context, "Context may not be null.").getKernel();
+        kernel.bootstrap(checkNotNull(activity, "Activity may not be null."));
     }
 
     /**

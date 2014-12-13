@@ -8,6 +8,8 @@ import android.app.Activity;
 import android.app.Application;
 import android.os.Bundle;
 
+import static prism.framework.Preconditions.checkNotNull;
+
 /**
  * An implementation of Android's activity lifecycle callbacks that will hook
  * into the prism hooks automatically for activities.
@@ -35,7 +37,7 @@ public class LifecycleSubscriber implements Application.ActivityLifecycleCallbac
     /** Constructor with a prism kernel. */
     public LifecycleSubscriber(PrismKernel kernel)
     {
-        this.kernel = kernel;
+        this.kernel = checkNotNull(kernel, "Kernel may not be null.");
     }
 
     @Override
