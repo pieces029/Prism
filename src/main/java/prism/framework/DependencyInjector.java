@@ -25,7 +25,10 @@ final class DependencyInjector
     protected DependencyInjector(GraphContext graphContext)
     {
         this.graphContext = graphContext;
-        this.graphContext.getApplicationGraph().injectStatics();
+
+        if (null != this.graphContext) {
+            this.graphContext.getApplicationGraph().injectStatics();
+        }
     }
 
     /**
