@@ -36,9 +36,7 @@ apply plugin: 'optional-base'
 apply plugin: 'provided-base'
 
 dependencies {
-    // optional to ensure no version requirements
-    compile 'com.google.android:android:4.1.+', optional
-
+    provided 'com.google.android:android:+', optional
     compile 'com.google.android:support-v4:+', optional
     compile 'com.squareup.dagger:dagger:+'
     compile 'com.squareup.dagger:dagger-compiler:+', optional
