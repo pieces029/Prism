@@ -6,7 +6,7 @@ def attr = { String name -> project."$name" }
 
 bintray {
     user = bintrayUser
-    key = bintrayPassword
+    key = bintrayKey
     publications = ['mavenJava']
     pkg {
         repo = attr 'project_bintray_repo'
